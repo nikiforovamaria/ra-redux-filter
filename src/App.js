@@ -1,18 +1,15 @@
 import React from 'react';
-import './App.css';
-import regeneratorRuntime from 'regenerator-runtime';
-import ServiceAdd from './components/ServiceAdd.js';
-import ServiceList from './components/ServiceList.js';
-import ServiceFiltr from './components/ServiceFiltr.js';
+import ServiceAdd from './components/ServiceAdd';
+import ServiceList from './components/ServiceList';
 
 
-export default function App() {
-
+function App() {
   return (
-    <React.Fragment>
-      <ServiceFiltr />
+    <>
       <ServiceAdd />
       <ServiceList />
-    </React.Fragment>
+    </>
   );
 }
+
+export default App;

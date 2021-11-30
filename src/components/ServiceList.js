@@ -1,39 +1,49 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeService, changeService, changeServiceCancel, filtrServiceField } from '../actions/actionCreators.js';
+import React from 'react'
+import {useSelector, useDispatch} from 'react-redux';
+import {removeService, EditService, clearService, filterService} from '../actions/actionCreators';
 
-export default function ServiceList() {
-  const items = useSelector((state) => state.serviceList);
-  const itemsActive = useSelector((state) => state.serviceAdd);
-  const filtrList = useSelector((state) => state.serviceFiltr);
+function ServiceList() {
+  const items = useSelector(state => state.serviceList);
+  const formState = useSelector(state => state.serviceAdd);
   const dispatch = useDispatch();
 
-  const filtrText = filtrList.value.toLowerCase();
-  const filtrItems = items.filter((item) => item.name.toLowerCase().includes(filtrText));
+
+
 
   const handleRemove = id => {
-    console.log(itemsActive);
-    console.log(id);
-    if (itemsActive.id !== id) {
-      dispatch(removeService(id));
-    } else {
-      dispatch(changeServiceCancel());
-      dispatch(removeService(id));
+    // очищаем форму ввода если удаляем редактируемый элемент
+    if(formState.name===items.find((el)=>el.id===id).name)
+    {
+      dispatch(clearService());
     }
-  };
+    dispatch(removeService(id));
+  }
 
-  const handleChange = (o) => {
-    const { id, name, price } = o;
-    dispatch(changeService(id, name, price));
-  };
+  const handleEdit = (name,price) => {
+    dispatch(EditService(name,price));
+  }
+
+  const filterHandler = (evt) => {
+    dispatch(filterService(evt.target.value));
+  }
+
 
   return (
+    <>
+    <span>Фильтр</span>
+    <input name="filter" onChange={filterHandler}></input>
     <ul>
-      {filtrItems.map((o) => <li key={o.id}>
-        {o.name} {o.price}
-        <button className="material-icons" onClick={() => handleChange(o)}>create</button>
-        <button className="material-icons" onClick={() => handleRemove(o.id)}>clear</button>
-      </li>)}
+      {items.map(o => (
+        <li key={o.id}>
+          {o.name} {o.price}
+          <button onClick={() => handleRemove(o.id)}>✕</button>
+          <button onClick={() => handleEdit(o.name, o.price)}>✎</button>
+        </li>))
+      }
     </ul>
-  );
+    </>
+  )
 }
+
+
+export default ServiceList;
